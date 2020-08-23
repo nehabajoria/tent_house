@@ -1,0 +1,171 @@
+ 
+  <div class="container">
+
+    <!--Section: Dynamic Content Wrapper-->
+    <section>
+        <div class="dynamic-content"></div>
+    </section>
+    <!--Section: Dynamic Content Wrapper-->
+
+    <!--Section: Products-->
+    <section class="text-center">
+
+        <!--Navbar-->
+        <nav class="navbar navbar-expand-lg info-color-dark mt-3 mb-5">
+
+            <!-- Navbar brand -->
+            <span class="navbar-brand">
+                <div>
+                            <button class="btn btn-primary m-2" (click)="openProductModal(productTemplate, null)">Add New Product</button>
+                          </div>
+            </span>
+
+            <!-- Collapse button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav" aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Collapsible content -->
+            
+            <!-- Collapsible content -->
+
+        </nav>
+        <!--/.Navbar-->
+
+        <!--Grid row-->
+
+        <div class="row wow fadeIn">
+                            <!--Grid column-->
+            <div class="col-lg-3 col-md-12 mb-4" *ngFor="let product of products">
+
+                <!-- Product Card naked -->
+                <div class="card-naked">
+
+                    <!--Featured image-->
+                    <div class="view overlay hm-white-slight rounded mb-3">
+                                                        <img src="https://wpt-commerce.mdbootstrap.com/wp-content/uploads/2018/08/beanie-with-logo-1.jpg" class="img-fluid" data-id="26">
+                        <a href="https://wpt-commerce.mdbootstrap.com/product/beanie-with-logo/">
+                            <div class="mask waves-effect waves-light"></div>
+                        </a>
+                    </div>
+
+                    <!--Content-->
+                    <h6 class="mb-3">
+                        <a href="https://wpt-commerce.mdbootstrap.com/product-category/clothing/accessories/">
+                        </a>
+                    </h6>
+                    <h5 class="mb-3">
+                        <strong>{{product.productTitle}}</strong>
+                    </h5>
+                    <p>
+                      
+                        <span class="mr-1">
+                            {{product.booked? product.booked: 0}} <span class="m-1">/ {{product.quantityTotal}}</span>
+                        </span>
+                    </p>
+                    <p>
+                                                      <span>
+                                                        ${{product.price}}</span>
+                  </p>
+                    <button href="# " class="btn btn-info btn-sm waves-effect waves-light m-2" data-toggle="tooltip" data-placement="left" title="Add to cart" 
+                     (click)="openOrderModal(orderTemplate, product)">
+                        Order
+                    </button>
+
+                    
+                    <button class="btn btn-info btn-sm waves-effect waves-light m-2" (click)="openProductModal(productTemplate, product)">Edit</button>
+      
+                    <button href="#" class="btn btn-info btn-sm waves-effect waves-light m-2" (click)="openDeleteModal(template, product.id)">Delete</button>
+
+                </div>
+                <!-- Product Card naked -->
+              </div>
+
+            </div>
+          
+      
+        <!--Grid row-->
+
+    </section>
+    <!--Section: Products-->
+
+</div>
+
+<ng-template #template>
+    <div class="modal-body text-center">
+      <p>Do you want to delete this Product record?</p>
+      <button type="button" class="btn btn-default" (click)="confirm()" >Yes</button>
+      <button type="button" class="btn btn-primary" (click)="decline()" >No</button>
+    </div>
+  </ng-template>
+
+  <ng-template #orderTemplate>
+    <div class="modal-body text-center">
+      <form [formGroup]="orderForm">
+      <div class="form-group" [ngClass]="orderForm.get('customer').dirty && orderForm.get('customer').invalid ? 'has-error' : ''">
+        <label class="control-label">Customer:</label>
+        <select class="form-control" formControlName="customer" id="orders">
+          <option *ngFor="let customer of customers; let i = index" [value]="customer.id">
+            {{customer.name}}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group" [ngClass]="orderForm.get('quantity').dirty && orderForm.get('quantity').invalid ? 'has-error' : ''">
+        <label class="control-label">Orderder Quantity:</label>
+        <input type="number" class="form-control" placeholder="Orderder Quantity" formControlName="quantity">
+        <span class="help-block" *ngIf="orderForm.get('quantity').hasError('isNotANumber') && orderForm.get('quantity').dirty">
+          Orderder Quantity should be a number.
+        </span>
+        <span class="help-block" *ngIf="orderValidation && selectedProduct">
+          Orderder Quantity can not be graeter than available quantity {{selectedProduct.quantityTotal}}.
+        </span>
+      </div>
+
+      <button type="button" class="btn btn-primary m-2" (click)="add()" >Yes</button>
+      <button type="button" class="btn btn-primary m-2" (click)="close()" >No</button>
+    </form>
+    </div>
+  </ng-template>
+  
+  <ng-template #productTemplate>
+    <div class="modal-body">
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit(); productForm.reset()">
+        <div class="form-group" 
+            [ngClass]="productForm.get('productTitle').dirty && productForm.get('productTitle').invalid ? 'has-error' : ''">
+          <label class="control-label">Title:</label>
+          <input type="text" class="form-control" placeholder="Product Title Here" formControlName="productTitle">
+          <span class="help-block" *ngIf="productForm.get('productTitle').hasError('required') && productForm.get('productTitle').dirty">
+            Title is required
+          </span>
+          <span class="help-block" *ngIf="productForm.get('productTitle').hasError('minlength') && productForm.get('productTitle').dirty">
+            Title should be at least {{ productForm.get('productTitle').errors.minlength.requiredLength }} characters long. You have entered {{ productForm.get('productTitle').errors.minlength.actualLength }}.
+          </span>
+        </div>
+        <div class="form-group" [ngClass]="productForm.get('price').invalid ? 'has-error' : ''">
+          <label class="control-label">Price:</label>
+          <input type="number" class="form-control" placeholder="Product Price" formControlName="price">
+          <span class="help-block" *ngIf="productForm.get('price').hasError('isNotANumber') && productForm.get('price').dirty">
+            Price should be a number.
+          </span>
+        </div>
+        <div class="form-group" [ngClass]="productForm.get('quantityTotal').invalid ? 'has-error' : ''">
+            <label class="control-label">Available Product:</label>
+            <input type="number" class="form-control" placeholder="Available Product" formControlName="quantityTotal">
+            <span class="help-block" *ngIf="productForm.get('quantityTotal').hasError('isNotANumber') && productForm.get('quantityTotal').dirty">
+              Total should be a number.
+            </span>
+          </div>
+          <div class="form-group" [ngClass]="productForm.get('booked').invalid ? 'has-error' : ''">
+            <label class="control-label">Ordered Product:</label>
+            <input type="number" class="form-control" placeholder="Ordered Product" formControlName="booked">
+            <span class="help-block" *ngIf="productForm.get('booked').hasError('isNotANumber') && productForm.get('booked').dirty">
+              Booked Product should be a number.
+            </span>
+          </div>
+        <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">
+          {{ !selectedProduct ? 'Add' : 'Save' }}
+        </button>
+      </form>
+    </div>
+  </ng-template>

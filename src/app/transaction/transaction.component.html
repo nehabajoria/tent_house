@@ -1,0 +1,62 @@
+<div class=" p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+    
+
+  <button id="create" class="btn btn-info btn-sm waves-effect waves-light m-2" (click)="convert()">Download Report</button> 
+    <table class="table table-striped">
+
+    <!--Table head-->
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Date</th>
+        <th>Transaction Type</th>
+        <th>Quantity</th>
+        <th>Product</th>
+        <th>Customer</th>
+        <th>Reverse/Related Transc.</th>
+      </tr>
+    </thead>
+    <!--Table head-->
+
+    <!--Table body-->
+    <tbody>
+      <tr *ngFor="let transaction of transactions">
+        <th scope="row">{{transaction.id}}</th>
+        <td>{{transaction.date}}</td>
+        <td>{{transaction.transactionType}}</td>
+        <td>{{transaction.quantity}}</td>
+        <td>{{transaction.customerName}}</td>
+        <td>{{transaction.productName}}</td>
+        <td *ngIf="!transaction.parentTransactionId">
+            <button class="btn btn-info btn-sm waves-effect waves-light m-2" (click)="openReverseModel(template, transaction)">Reverse</button>
+          </td>
+          <td *ngIf="transaction.parentTransactionId">
+            {{transaction.parentTransactionId}}
+          </td>
+      </tr>
+      <tr>
+    </tbody>
+    <!--Table body-->
+
+  </table>
+  <!--Table-->
+
+</div>
+
+
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <form [formGroup]="reverseForm">
+    <div class="form-group" [ngClass]="reverseForm.get('quantity').dirty && reverseForm.get('quantity').invalid ? 'has-error' : ''">
+      <label class="control-label">Return Product Count:</label>
+      <input type="number" class="form-control" placeholder="Product Total" formControlName="quantity">
+      <span class="help-block" *ngIf="reverseForm.get('quantity').hasError('isNotANumber') && reverseForm.get('quantity').dirty">
+        Total should be a number.
+      </span>
+    </div>
+    <button type="button" class="btn btn-primary m-2" (click)="save()" >Save</button>
+    <button type="button" class="btn btn-primary m-2" (click)="close()" >Close</button>
+  </form>
+  </div>
+</ng-template>
