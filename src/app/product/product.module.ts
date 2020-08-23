@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { ProductRoutingModule } from './product-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { CustomerService } from './../service/customer.service';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppHTTPInterceptor } from './../service/http.interceptor'
